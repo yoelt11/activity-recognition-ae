@@ -102,7 +102,7 @@ Important aspects covered in this paper are:
   - **Position embedding:** Refers to the position of the word inside of the sentence
   
   <div>
-      <img src=\Figures\bert_embeddings.png>
+      <img src=.\Figures\bert_embeddings.png>
   </div>
 
 * MPOSE2021
@@ -125,5 +125,16 @@ Important aspects covered in this paper are:
 >     publisher={Elsevier}
 >   }
 >   ```
+
+* https://towardsdatascience.com/how-bert-leverage-attention-mechanism-and-transformer-to-learn-word-contextual-relations-5bbee1b6dbdbhttps://towardsdatascience.com/how-bert-leverage-attention-mechanism-and-transformer-to-learn-word-contextual-relations-5bbee1b6dbdb
+
+* > @article{devlin2018bert,
+  >   title={Bert: Pre-training of deep bidirectional transformers for language understanding},
+  >   author={Devlin, Jacob and Chang, Ming-Wei and Lee, Kenton and Toutanova, Kristina},
+  >   journal={arXiv preprint arXiv:1810.04805},
+  >   year={2018}
+  > }
+
+
 
 
