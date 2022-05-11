@@ -1,14 +1,14 @@
 # Action Transformer: A Self-Attention Model for Short-Time Pose-Based Human Action Recognition
 
-@article{mazzia2022action,
-  title={Action Transformer: A self-attention model for short-time pose-based human action recognition},
-  author={Mazzia, Vittorio and Angarano, Simone and Salvetti, Francesco and Angelini, Federico and Chiaberge, Marcello},
-  journal={Pattern Recognition},
-  volume={124},
-  pages={108487},
-  year={2022},
-  publisher={Elsevier}
-}
+> @article{mazzia2022action,
+>  title={Action Transformer: A self-attention model for short-time pose-based human action recognition},
+>  author={Mazzia, Vittorio and Angarano, Simone and Salvetti, Francesco and Angelini, Federico and Chiaberge, Marcello},
+>  journal={Pattern Recognition},
+>  volume={124},
+>  pages={108487},
+>  year={2022},
+>  publisher={Elsevier}
+> }
 
 ### Main Idea
 
@@ -34,11 +34,59 @@ Important aspects covered in this paper are:
 
 
 
-### Notes
+### Implementation
+
+* **Linear Projection**
+  
+  **Inputs**
+  
+  This is a $X^{in} \in \mathbb{R}^{T\times N \times C}$ tensor, where $T$ is the sequence length,
+  
+  $N$ is the node number and $C$ is the channel number which is three for posenet models ($x, y, score$).
+  
+  **Updatable Parameters**
+  
+  * $W^{l_0} \in \mathbb{R}^{N \cdot C \times D_{model}}$
+  
+  * $x^{l_0}_{cls} \in \mathbb{R}^{1 \times D_{model}}$ 
+  
+  * $X_{pos} \in \mathbb{R}^{T \times D_{model}}$
+  
+  **Equation**
+  
+  $X^{lp} = [x^{l_0}_{cls};X^{in} \cdot W^{l_0}] + X_{pos}$
+
+* **Transformer ($F_{enc}$)**
+  
+  Standard encoder as per torch will be used:
+  
+  * [TransformerEncoderLayer &mdash; PyTorch 1.11.0 documentation](https://pytorch.org/docs/stable/generated/torch.nn.TransformerEncoderLayer.html)[TransformerEncoderLayer &mdash; PyTorch 1.11.0 documentation](https://pytorch.org/docs/stable/generated/torch.nn.TransformerEncoderLayer.html)
+  
+  * [TransformerEncoder &mdash; PyTorch 1.11.0 documentation](https://pytorch.org/docs/stable/generated/torch.nn.TransformerEncoder.html)
+  
+  * Using parameters forAcT-$\mu$:
+    
+    * $H = 1$
+    
+    * $D_{model}=64$
+    
+    * $L = 4$
+    
+    * $n = 1$
+
+* **Multilayer perceptron ($M_{lp}$)**
+  
+  This layer is a CONV1D
+  
+  * network size:
+    
+    * $D{mlp}=256$
+
+* **Output**
+  
+  $\tilde{y}= M_{lp}(F_{enc}(X^{lp}))$
 
 ### Keywords
-
-
 
 * BERT:
   
@@ -66,14 +114,16 @@ Important aspects covered in this paper are:
   </div>
   
   * [GitHub - PIC4SeR/MPOSE2021_Dataset: This repository contains the MPOSE2021 Dataset for short-time pose-based Human Action Recognition (HAR).](https://github.com/PIC4SeR/MPOSE2021_Dataset)
-  
-  * ```
-    @article{mazzia2021action,
-      title={Action Transformer: A Self-Attention Model for Short-Time Pose-Based Human Action Recognition},
-      author={Mazzia, Vittorio and Angarano, Simone and Salvetti, Francesco and Angelini, Federico and Chiaberge, Marcello},
-      journal={Pattern Recognition},
-      pages={108487},
-      year={2021},
-      publisher={Elsevier}
-    }
-    ```
+
+> - ```
+>   @article{mazzia2021action,
+>     title={Action Transformer: A Self-Attention Model for Short-Time Pose-Based Human Action Recognition},
+>     author={Mazzia, Vittorio and Angarano, Simone and Salvetti, Francesco and Angelini, Federico and Chiaberge, Marcello},
+>     journal={Pattern Recognition},
+>     pages={108487},
+>     year={2021},
+>     publisher={Elsevier}
+>   }
+>   ```
+
+
