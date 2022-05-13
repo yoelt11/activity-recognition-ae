@@ -38,7 +38,7 @@ class LinearProjection(nn.Module):
 
 		X_lp = torch.cat([x_bcls,X_lo],1) + X_bpos # out_dim = [B, T+1, D_model]
 		
-		return X_lp
+		return X_lp # [B, T+1, D_model]
 
 #---------------------------------------	
 if __name__=="__main__":
