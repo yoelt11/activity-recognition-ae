@@ -3,7 +3,7 @@ from torch.utils.data import Dataset, DataLoader
 import numpy as np
 
 class TrainDataloader(Dataset):
-	def __init__(self), PATH:
+	def __init__(self, PATH):
 		with open(PATH + 'X_train.npy', 'rb') as f:
 			self.x = torch.from_numpy(np.load(f))
 		with open(PATH + 'y_train.npy', 'rb') as f:

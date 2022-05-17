@@ -43,7 +43,7 @@ class LinearProjection(nn.Module):
 		positions = torch.arange(start=0, end=31).int()
 		X_pos = self.embedding(positions) # out_dim = [B, T+1, D_model]
 		
-		X_lp = torch.cat([x_bcls, X_lo], 1) + Xpos  # out_dim = [B, T+1, D_model]
+		X_lp = torch.cat([x_bcls, X_lo], 1) + X_pos  # out_dim = [B, T+1, D_model]
 		
 		return X_lp # [B, T+1, D_model]
 

@@ -32,8 +32,6 @@ Important aspects covered in this paper are:
     <img src="./Figures/pipeline.png"/>
 </div>
 
-
-
 ### Implementation
 
 * **Linear Projection**
@@ -134,7 +132,3 @@ Important aspects covered in this paper are:
   >   journal={arXiv preprint arXiv:1810.04805},
   >   year={2018}
   > }
-
-
-
-
