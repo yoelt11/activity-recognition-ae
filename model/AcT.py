@@ -1,6 +1,6 @@
 import torch
 from torch import nn
-from .LinearProjection import LinearProjection
+from LinearProjection import LinearProjection
 
 """
 Code based on: Action Transformer: A Self-Attention Model for Short-Time Pose-Based
@@ -47,24 +47,33 @@ class AcT(nn.Module):
 		self.transformer_encoder = nn.TransformerEncoder(encoder_layer, num_layers=num_layer, norm=self.layer_norm)
 
 		# Multi-layer perceptron
-		self.mlp = nn.Sequential(
-					nn.Linear(self.d_model, d_last_mlp),
-					nn.GELU(),
-					nn.Dropout(dropout),
-					nn.Linear(d_last_mlp, classes),
-					nn.LogSoftmax(dim=1) 
-					)
+		if B == 1:
+			self.mlp = nn.Sequential(
+						nn.Linear(self.d_model, d_last_mlp),
+						nn.GELU(),
+						nn.Dropout(dropout),
+						nn.Linear(d_last_mlp, classes),
+						nn.LogSoftmax(dim=0)
+						)
+		else: 
+			self.mlp = nn.Sequential(
+						nn.Linear(self.d_model, d_last_mlp),
+						nn.GELU(),
+						nn.Dropout(dropout),
+						nn.Linear(d_last_mlp, classes),
+						nn.LogSoftmax(dim=1)
+						)
 
-	def generate_max(self,X_in):
+	def generate_mask(self,X_in):
 		# Experimental random masking for the input of the encoder
 		B, T, D = X_in.shape
-		return torch.log((torch.Tensor(B*2, T, T).uniform_() > 0.35 ).float())
+		return torch.log((torch.Tensor(B*3, T, T).uniform_() > 0.35 ).float())
 
 	def forward(self, X_in):
 		
 		lp = self.linear_projection(X_in) # [B, T+1, D_model]
 
-		enc_out = self.transformer_encoder(lp) # [B, T+1, D_model]
+		enc_out = self.transformer_encoder(lp, self.generate_mask(lp)) # [B, T+1, D_model]
 
 		out =  self.mlp(enc_out[:, 0, :].squeeze())#self.mlp(enc_out[:, 0, :].squeeze())
 
@@ -84,4 +93,4 @@ if __name__=="__main__":
 	
 	out = model(X_in)
 
-	print(out.shape)
+	print(out)
