@@ -5,14 +5,17 @@ from torch.utils.data import Dataset,DataLoader
 from torch.utils.tensorboard import SummaryWriter
 import sys
 sys.path.insert(0, '..')
+sys.path.insert(0, './trained_models/')
+sys.path.insert(0, '../models/')
 from ModelDataLoader import TrainDataloader, TestDataloader
 from model import AcT as ClassificationModel
+
 
 def loadDataset(batch_size, PATH):
     train_dataset = TrainDataloader(PATH=PATH)
     test_dataset = TestDataloader(PATH=PATH)
-    train_loader = DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True, pin_memory=True, num_workers=20, drop_last=True)
-    test_loader = DataLoader(dataset=test_dataset, batch_size=batch_size, shuffle=True, pin_memory=True, num_workers=20, drop_last=True)
+    train_loader = DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True, pin_memory=True, num_workers=8, drop_last=True)
+    test_loader = DataLoader(dataset=test_dataset, batch_size=batch_size, shuffle=True, pin_memory=True, num_workers=8, drop_last=True)
 
     return train_loader, test_loader
 
@@ -74,17 +77,17 @@ if __name__=='__main__':
     batch_size, T, N, C, nhead, num_layer, classes = 512, 30, 17, 3, 2, 4, 20
     
     # Load Dataset
-    train_loader, test_loader = loadDataset(batch_size, PATH='../dataset/posenet/2/')
+    train_loader, test_loader = loadDataset(batch_size, PATH='/home/edgar/Documents/in-work/datasets/activity-recognition/posenet/3/')
     # Load Model
     model = ClassificationModel.AcT(B=batch_size, T=30, N=17, C=3, nhead=3, num_layer=6, d_last_mlp=502, classes=20)
     # For tensorboard
     comment = f'Testing Network'
-    writer = SummaryWriter(f'./training_stats/runs/model_m' , comment=comment)
+    writer = SummaryWriter(f'./training_stats/runs/model_m4' , comment=comment)
     # Training Parameters
     loss_function = nn.NLLLoss()
     learning_rate = 1e-3
     optimizer = optim.AdamW(model.parameters(), lr=learning_rate,  weight_decay=1e-4,)
-    num_epochs = 350
+    num_epochs = 250
 
     # Training Loop
     train_step = 0
@@ -96,5 +99,6 @@ if __name__=='__main__':
         writer, train_step = train_function(train_loader, model, batch_size, train_step, writer)
         print("Epoch: ", epoch)
         writer, test_step = check_accuracy(test_loader, model, batch_size, train_step, writer)
-
-    torch.save(model.state_dict(), './trained_models/model.pth')
+        if epoch % 20 == 0:
+            torch.save(model.state_dict(), './trained_models/model_4.pth')
+    torch.save(model.state_dict(), './trained_models/model_4.pth')        
