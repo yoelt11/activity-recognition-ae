@@ -6,9 +6,9 @@ from torch.utils.tensorboard import SummaryWriter
 import sys
 sys.path.insert(0, '..')
 sys.path.insert(0, './trained_models/')
-sys.path.insert(0, '../models/')
+sys.path.insert(0, '../model/')
 from ModelDataLoader import TrainDataloader, TestDataloader
-from model import AcT as ClassificationModel
+import AcT as ClassificationModel
 
 
 def loadDataset(batch_size, PATH):
@@ -72,33 +72,41 @@ def train_function(loader, model, batch_size, step, writer):
         step += 1
 
         return writer, step
+        s
+def load_yaml(PATH='./train_config.yaml'):
+    """
+        Reads yaml configuration script
+    """
+    stream = open(PATH, 'r')
+    dictionary = yaml.safe_load(stream)
+    
+    return dictionary
 
 if __name__=='__main__':
-    batch_size, T, N, C, nhead, num_layer, classes = 512, 30, 17, 3, 2, 4, 20
+    parameters = load_yaml()
+
+    batch_size, T, N, C, nhead, num_layer, d_last_mlp, classes = list(parameters['MODEL_PARAM'].values())
     
     # Load Dataset
-    train_loader, test_loader = loadDataset(batch_size, PATH='/home/edgar/Documents/in-work/datasets/activity-recognition/posenet/3/')
+    train_loader, test_loader = loadDataset(batch_size, PATH=parameters['MODEL_PATH'])
     # Load Model
-    model = ClassificationModel.AcT(B=batch_size, T=30, N=17, C=3, nhead=3, num_layer=6, d_last_mlp=502, classes=20)
+    model = ClassificationModel.AcT(B=batch_size, T=T, N=N, C=C, nhead=nheads, num_layer=num_layer, d_last_mlp=d_last_mlp, classes=classes)
     # For tensorboard
-    comment = f'Testing Network'
-    writer = SummaryWriter(f'./training_stats/runs/model_m4' , comment=comment)
+    writer = SummaryWriter(fc , comment=parameters['TB_COMMENT'])
     # Training Parameters
     loss_function = nn.NLLLoss()
-    learning_rate = 1e-3
-    optimizer = optim.AdamW(model.parameters(), lr=learning_rate,  weight_decay=1e-4,)
-    num_epochs = 250
+    optimizer = optim.AdamW(model.parameters(), lr=parameters['TRAIN_PARAM']['LEARNING_RATE'],  weight_decay=parameters['TRAIN_PARAM']['WEIGHT_DECAY'],)
+    num_epochs = parameters['TRAIN_PARAM']['EPOCHS']
 
     # Training Loop
     train_step = 0
     test_step = 0
-    warmup_epochs = int(num_epochs*.4)
-
+    
     for epoch in range(num_epochs):
 
         writer, train_step = train_function(train_loader, model, batch_size, train_step, writer)
         print("Epoch: ", epoch)
         writer, test_step = check_accuracy(test_loader, model, batch_size, train_step, writer)
         if epoch % 20 == 0:
-            torch.save(model.state_dict(), './trained_models/model_4.pth')
-    torch.save(model.state_dict(), './trained_models/model_4.pth')        
+            torch.save(model.state_dict(), parameters['MODEL_OUT_PATH'])
+    torch.save(model.state_dict(), parameters['MODEL_OUT_PATH'])       
