@@ -1,22 +1,22 @@
 #---- MODEL PARAMETERS
 MODEL_PARAM: # input in the same order as class initialization
   BATCH_SIZE: 512
-  TIME_FRAMES: 30
+  TIME_FRAMES: 5
   KEYPOINTS: 17
   CHANNEL_IN: 3
   HEADS: 3
   LAYERS: 6
   LAST_MLP: 512
-  CLASSES: 20
+  CLASSES: 8
 
 #---- MODEL CONFIG
-MODEL_PATH: '/home/edgar/Documents/in-work/datasets/activity-recognition/movenet/3/'
-TB_PATH: './training_stats/runs/model_m4'
-TB_COMMENT: ''
-MODEL_OUT_PATH: './tmp/ae-thunder-01.pth'
+DS_PATH: '/home/edgar/Documents/in-work/datasets/activity-recognition/local_dataset/'
+TB_PATH: './training_stats/runs/ae-thunder-05'
+TB_COMMENT: '_our_ds'
+MODEL_OUT_PATH: './tmp/ae-thunder-05.pth'
 
 #---- TRAINING PARAMETERS
 TRAIN_PARAM:
-  LEARNING_RATE: 1e-3
-  WEIGHT_DECAY: 1e-4
-  EPOCHS: 350
+  LEARNING_RATE: .001
+  WEIGHT_DECAY: .0001
+  EPOCHS: 150

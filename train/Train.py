@@ -9,6 +9,7 @@ sys.path.insert(0, './trained_models/')
 sys.path.insert(0, '../model/')
 from ModelDataLoader import TrainDataloader, TestDataloader
 import AcT as ClassificationModel
+import yaml
 
 
 def loadDataset(batch_size, PATH):
@@ -51,6 +52,7 @@ def train_function(loader, model, batch_size, step, writer):
             param.grad = None
 
         network_output = model(x) # predict
+
         # set y values between 0 and 1
 
         loss = loss_function(network_output, y)
@@ -88,11 +90,11 @@ if __name__=='__main__':
     batch_size, T, N, C, nhead, num_layer, d_last_mlp, classes = list(parameters['MODEL_PARAM'].values())
     
     # Load Dataset
-    train_loader, test_loader = loadDataset(batch_size, PATH=parameters['MODEL_PATH'])
+    train_loader, test_loader = loadDataset(batch_size, PATH=parameters['DS_PATH'])
     # Load Model
-    model = ClassificationModel.AcT(B=batch_size, T=T, N=N, C=C, nhead=nheads, num_layer=num_layer, d_last_mlp=d_last_mlp, classes=classes)
+    model = ClassificationModel.AcT(B=batch_size, T=T, N=N, C=C, nhead=nhead, num_layer=num_layer, d_last_mlp=d_last_mlp, classes=classes)
     # For tensorboard
-    writer = SummaryWriter(fc , comment=parameters['TB_COMMENT'])
+    writer = SummaryWriter(comment=parameters['TB_COMMENT'])
     # Training Parameters
     loss_function = nn.NLLLoss()
     optimizer = optim.AdamW(model.parameters(), lr=parameters['TRAIN_PARAM']['LEARNING_RATE'],  weight_decay=parameters['TRAIN_PARAM']['WEIGHT_DECAY'],)
