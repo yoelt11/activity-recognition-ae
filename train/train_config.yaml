@@ -10,13 +10,13 @@ MODEL_PARAM: # input in the same order as class initialization
   CLASSES: 8
 
 #---- MODEL CONFIG
-DS_PATH: '/home/edgar/Documents/in-work/datasets/activity-recognition/local_dataset/'
-TB_PATH: './training_stats/runs/ae-thunder-05'
+DS_PATH: '/home/etorres/Documents/in-work/datasets/activity-recognition/local-dataset/'
+TB_PATH: '/home/etorres/Documents/in-work/training/activity-recognition/runs/ae-ensemble-lds-01'
 TB_COMMENT: '_our_ds'
-MODEL_OUT_PATH: './tmp/ae-thunder-05.pth'
+MODEL_OUT_PATH: '/home/etorres/Documents/in-work/models/activity-recognition-models/autoencoder/model_4a/model.pth'
 
 #---- TRAINING PARAMETERS
 TRAIN_PARAM:
   LEARNING_RATE: .001
   WEIGHT_DECAY: .0001
-  EPOCHS: 150
+  EPOCHS: 100

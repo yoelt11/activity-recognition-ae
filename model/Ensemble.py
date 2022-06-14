@@ -20,42 +20,35 @@ class Ensemble(nn.Module):
 	def __init__(self, ensemble_size, B=40, T=5, N=17, C=3, nhead=1, num_layer=4, d_last_mlp=256, classes=20):
 
 		super().__init__()
-		PATH = '../train/trained_models/'
-		self.ensemble = []
 		
-		for i in range(0,ensemble_size):	
-			self.ensemble += [AcT(B=B, T=T, N=N, C=C, nhead=nhead, num_layer=num_layer, d_last_mlp=d_last_mlp
-										,classes=classes)]
-			self.ensemble[i].load_state_dict(torch.load(PATH+'model_'+str(i+1)+'.pth'))
+		self.ensemble = nn.ModuleList()
+		self.ensemble_size = ensemble_size
+		self.B = B
+		self.T = T
+		self.N = N
+		self.C = C
+		self.nhead = nhead
+		self.num_layer = num_layer
+		self.d_last_mlp = d_last_mlp
+		self.classes = classes 
+
+ 
+	def load_weights(self, PATH):
+		
+		for i in range(0, self.ensemble_size):	
+			self.ensemble.append(AcT(B=self.B, T=self.T, N=self.N, C=self.C, nhead=self.nhead, num_layer=self.num_layer, d_last_mlp=self.d_last_mlp
+										,classes=self.classes))
+			self.ensemble[i].load_state_dict(torch.load(PATH+'/models/model_'+str(i+1)+'.pth'))
 			self.ensemble[i].eval()
 
-
-		### Model 1 ###
-		self.model_1 =  AcT(B=B, T=T, N=N, C=C, nhead=nhead, num_layer=num_layer, d_last_mlp=d_last_mlp, classes=classes)
-		self.model_1.load_state_dict(torch.load(PATH+'model_1.pth'))
-		self.model_1.eval() 
-		### Model 2 ###
-		self.model_2 =  AcT(B=B, T=T, N=N, C=C, nhead=nhead, num_layer=num_layer, d_last_mlp=d_last_mlp, classes=classes)
-		self.model_2.load_state_dict(torch.load(PATH+'model_2.pth'))
-		self.model_2.eval() 
-		### Model 3 ###
-		self.model_3 =  AcT(B=B, T=T, N=N, C=C, nhead=nhead, num_layer=num_layer, d_last_mlp=d_last_mlp, classes=classes)
-		self.model_3.load_state_dict(torch.load(PATH+'model_3.pth'))
-		self.model_3.eval() 
-		### Model 4 ###
-		self.model_4 =  AcT(B=B, T=T, N=N, C=C, nhead=nhead, num_layer=num_layer, d_last_mlp=d_last_mlp, classes=classes)
-		self.model_4.load_state_dict(torch.load(PATH+'model_4.pth'))
-		self.model_4.eval() 
-
 	def forward(self, X_in):
-		out = []
+		out = torch.zeros(self.classes)
 
 		for i, l in enumerate(self.ensemble):
-			out.append(self.ensemble[i](X_in))
+			out = l(X_in) + out
 		
 
-		
-		return sum(out)# [B, T+1, D_model]
+		return out / self.ensemble_size # [B, T+1, D_model]
 
 """
 ---------------------------------------	

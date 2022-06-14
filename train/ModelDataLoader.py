@@ -9,7 +9,7 @@ class TrainDataloader(Dataset):
 		with open(PATH + 'y_train.npy', 'rb') as f:
 			self.y =  torch.from_numpy(np.load(f))
 
-		self.n_samples = self.y.shape[0]
+		self.n_samples = self.x.shape[0]
 
 	def __getitem__(self, index):
 		return self.x[index], self.y[index]
@@ -25,7 +25,7 @@ class TestDataloader(Dataset):
 		with open(PATH + 'y_test.npy', 'rb') as f:
 			self.y =  torch.from_numpy(np.load(f))
 		
-		self.n_samples = self.y.shape[0]
+		self.n_samples = self.x.shape[0]
 
 	def __getitem__(self, index):
 		return self.x[index], self.y[index]

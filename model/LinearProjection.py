@@ -29,7 +29,7 @@ class LinearProjection(nn.Module):
 		self.bn = nn.BatchNorm1d(N * C).float()
 		self.W_lo = nn.Linear(N*C, D_model, bias=False)
 		self.x_cls = nn.Parameter(torch.randn([1, D_model]))
-		self.embedding = nn.Embedding(T+1, D_model, norm_type=2, max_norm=1)
+		self.embedding = nn.Embedding(T+1, D_model, norm_type=2.0, max_norm=1.0)
 
 	def forward(self, X_in):
 
@@ -40,7 +40,7 @@ class LinearProjection(nn.Module):
 		# expanding x_bcls to adjust it to the batch size
 		x_bcls = self.x_cls.expand([B,-1,-1]) # out_dim = [B, 1, D_model]
 		
-		positions = torch.arange(start=0, end=31).int()
+		positions = torch.arange(start=0, end=T+1).int()
 		X_pos = self.embedding(positions) # out_dim = [B, T+1, D_model]
 		
 		X_lp = torch.cat([x_bcls, X_lo], 1) + X_pos  # out_dim = [B, T+1, D_model]
